@@ -1,7 +1,6 @@
 package com.faculte.simplefaculteauthenticate.ws.rest.vo;
 
 import com.faculte.simplefaculteauthenticate.domain.security.UserDetails;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
