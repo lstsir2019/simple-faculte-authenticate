@@ -19,9 +19,5 @@ import org.springframework.stereotype.Component;
 @Component
 public class PasswordUtil {
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-         return NoOpPasswordEncoder.getInstance();
-        //return new BCryptPasswordEncoder();
-    }
+  
 }

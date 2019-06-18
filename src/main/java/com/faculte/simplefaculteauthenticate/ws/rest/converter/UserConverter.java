@@ -1,10 +1,13 @@
 package com.faculte.simplefaculteauthenticate.ws.rest.converter;
 
+import com.faculte.simplefaculteauthenticate.domain.bean.AuthorityUser;
 import com.faculte.simplefaculteauthenticate.domain.bean.User;
 import com.faculte.simplefaculteauthenticate.util.ListUtil;
 import com.faculte.simplefaculteauthenticate.util.NumberUtil;
 import com.faculte.simplefaculteauthenticate.util.StringUtil;
 import com.faculte.simplefaculteauthenticate.ws.rest.vo.UserVo;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class UserConverter implements AbstractConverter<User, UserVo> {
 
     private boolean authorityUsers = true;
+    private boolean authorities = true;
 
     @Autowired
     private AuthorityUserConverter authorityUserConverter;
@@ -38,6 +42,9 @@ public class UserConverter implements AbstractConverter<User, UserVo> {
             if (ListUtil.isNotEmpty(vo.getAuthorityUsersVo()) && authorityUsers) {
                 item.setAuthorityUsers(authorityUserConverter.toItem(vo.getAuthorityUsersVo()));
             }
+            if (ListUtil.isNotEmpty(vo.getAuthorities()) && authorities) {
+                item.setAuthorityUsers(authorityUserConverter.toItem(item,vo.getAuthorities()));
+            }
 
             return item;
         }
@@ -61,7 +68,8 @@ public class UserConverter implements AbstractConverter<User, UserVo> {
     }
 
     public void init() {
-        authorityUsers = true;
+        this.authorityUsers = true;
+        this.authorities = true;
     }
 
     public boolean isAuthorityUsers() {

@@ -32,7 +32,6 @@ public class AuthorityUserServiceImpl implements AuthorityUserService {
 
     @Override
     public AuthorityUser save(AuthorityUser authorityuser) {
-
         if (authorityuser == null) {
             return null;
         } else {

@@ -24,10 +24,9 @@ public class AuthorityServiceImpl implements AuthorityService {
 
     @Override
     public Authority save(Authority authority) {
-
         if (authority == null) {
             return null;
-        } else {
+        } else {            
             authorityDao.save(authority);
             return authority;
         }

@@ -1,9 +1,8 @@
 package com.faculte.simplefaculteauthenticate.ws.rest.vo;
 
 import com.faculte.simplefaculteauthenticate.domain.security.UserDetails;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
-import org.springframework.security.core.GrantedAuthority;
 
 public class UserVo {
 
@@ -11,7 +10,7 @@ public class UserVo {
     private String email;
     private String password;
     private String token;
-    Collection<? extends GrantedAuthority> authorities;
+    List<String> authorities=new ArrayList<>();
     private List<AuthorityUserVo> authorityUsersVo;
 
     public UserVo() {
@@ -21,7 +20,9 @@ public class UserVo {
         this.email = userDetails.getUsername();
         this.password = userDetails.getPassword();
         //this.authorityUsersVo =
-        this.authorities = userDetails.getAuthorities();
+        userDetails.getAuthorities().forEach((authority) -> {
+            this.authorities.add(authority.getAuthority());
+        });
         this.token = token;
     }
 
@@ -62,13 +63,14 @@ public class UserVo {
         this.token = token;
     }
 
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public List<String> getAuthorities() {
         return authorities;
     }
 
-    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+    public void setAuthorities(List<String> authorities) {
         this.authorities = authorities;
     }
+
 
     public void setAuthorityUserVo(List<AuthorityUserVo> AuthorityUsersVo) {
         this.authorityUsersVo = authorityUsersVo;

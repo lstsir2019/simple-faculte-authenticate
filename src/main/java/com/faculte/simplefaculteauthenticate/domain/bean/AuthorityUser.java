@@ -23,5 +23,10 @@ public class AuthorityUser {
     @ManyToOne
     private Authority authority;
 
+    public AuthorityUser(User user, Authority authority) {
+        this.user = user;
+        this.authority = authority;
+    }
+
 
 }
