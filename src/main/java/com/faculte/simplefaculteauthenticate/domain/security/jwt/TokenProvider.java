@@ -40,11 +40,15 @@ public class TokenProvider {
 
         long now = (new Date()).getTime();
         Date validity;
+        System.out.println("tokenValidityInMillisecondsForRememberMe  ========> " + tokenValidityInMillisecondsForRememberMe);
+        System.out.println("tokenValidityInMilliseconds ======>" + tokenValidityInMilliseconds);
         if (rememberMe) {
             validity = new Date(now + this.tokenValidityInMillisecondsForRememberMe);
         } else {
             validity = new Date(now + this.tokenValidityInMilliseconds);
         }
+        System.out.println(validity);
+        System.out.println(new Date());
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
@@ -93,5 +97,4 @@ public class TokenProvider {
         return false;
     }
 
-   
 }

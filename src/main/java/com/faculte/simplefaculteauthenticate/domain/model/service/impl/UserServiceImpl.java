@@ -19,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,16 +39,19 @@ public class UserServiceImpl implements UserService {
 
     @Bean
     PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
-        //return new BCryptPasswordEncoder();
+        //    return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User save(User user) {
-
         if (user == null) {
             return null;
         } else {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             userDao.save(user);
             return user;
         }
@@ -62,6 +66,7 @@ public class UserServiceImpl implements UserService {
             if (ListUtil.isEmpty(user.getAuthorityUsers())) {
                 return null;
             } else {
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
                 for (AuthorityUser authorityuser : user.getAuthorityUsers()) {
                     authorityuser.setUser(user);
                     authorityuserService.save(authorityuser);
@@ -75,9 +80,6 @@ public class UserServiceImpl implements UserService {
     private boolean valide(CharSequence cs, String string) {
         return passwordEncoder.matches(cs, string);
     }
-
-    @Autowired
-    public PasswordEncoder passwordEncoder;
 
     @Override
     public void authenticate(String username, String password) {

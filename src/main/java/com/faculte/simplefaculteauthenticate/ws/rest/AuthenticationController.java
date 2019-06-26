@@ -6,15 +6,20 @@
 package com.faculte.simplefaculteauthenticate.ws.rest;
 
 import antlr.Token;
-import com.faculte.simplefaculteauthenticate.config.CustomAthenticationProvider;
+import com.faculte.simplefaculteauthenticate.domain.security.config.CustomAthenticationProvider;
 import com.faculte.simplefaculteauthenticate.domain.bean.User;
 import com.faculte.simplefaculteauthenticate.domain.security.UserDetails;
+import com.faculte.simplefaculteauthenticate.domain.security.jwt.JWTConfigurer;
+import com.faculte.simplefaculteauthenticate.domain.security.jwt.JWTToken;
 import com.faculte.simplefaculteauthenticate.domain.security.jwt.TokenProvider;
+import com.faculte.simplefaculteauthenticate.ws.rest.vo.LoginVo;
 import com.faculte.simplefaculteauthenticate.ws.rest.vo.UserVo;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,7 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author gouss
  */
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200"})
 public class AuthenticationController {
 
     @Autowired
@@ -41,18 +45,18 @@ public class AuthenticationController {
     @Autowired
     private TokenProvider tokenProvider;
 
-    @PostMapping(value = "/login")
-    public ResponseEntity<UserVo> login(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/login")
+    public ResponseEntity<JWTToken> authorize(@Valid @RequestBody LoginVo loginVo) {
 
-        try {
-            Authentication authentication = athenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
-            final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            final String token = tokenProvider.createToken(authentication, false);
-            response.setHeader("Token", token);
-            return new ResponseEntity<>(new UserVo(userDetails, token), HttpStatus.OK);
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException(String.valueOf("coudln't authenticate using " + user.getEmail() + " ! "));
-        }
+        UsernamePasswordAuthenticationToken authenticationToken
+                = new UsernamePasswordAuthenticationToken(loginVo.getEmail(), loginVo.getPassword());
+
+        Authentication authentication = athenticationProvider.authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        boolean rememberMe = (null == loginVo.isRememberMe()) ? false : loginVo.isRememberMe();
+        String jwt = tokenProvider.createToken(authentication, rememberMe);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
+        return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }
 }

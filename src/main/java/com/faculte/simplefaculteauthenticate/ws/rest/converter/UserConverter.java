@@ -19,6 +19,8 @@ public class UserConverter implements AbstractConverter<User, UserVo> {
 
     @Autowired
     private AuthorityUserConverter authorityUserConverter;
+    @Autowired
+    private AuthorityConverter authorityConverter;
 
     @Override
     public User toItem(UserVo vo) {
@@ -31,19 +33,17 @@ public class UserConverter implements AbstractConverter<User, UserVo> {
                 item.setEmail(vo.getEmail());
             }
 
-            if (StringUtil.isNotEmpty(vo.getPassword())) {
-                item.setPassword(vo.getPassword());
-            }
-
             if (vo.getId() != null) {
                 item.setId(NumberUtil.toLong(vo.getId()));
             }
 
-            if (ListUtil.isNotEmpty(vo.getAuthorityUsersVo()) && authorityUsers) {
-                item.setAuthorityUsers(authorityUserConverter.toItem(vo.getAuthorityUsersVo()));
+            if (ListUtil.isNotEmpty(vo.getAuthorities()) && authorityUsers) {
+                this.authorityUsers = false;
+                item.setAuthorityUsers(authorityUserConverter.toItem(item, vo.getAuthorities()));
             }
             if (ListUtil.isNotEmpty(vo.getAuthorities()) && authorities) {
-                item.setAuthorityUsers(authorityUserConverter.toItem(item,vo.getAuthorities()));
+                this.authorities = false;
+                item.setAuthorityUsers(authorityUserConverter.toItem(item, vo.getAuthorities()));
             }
 
             return item;
@@ -57,12 +57,12 @@ public class UserConverter implements AbstractConverter<User, UserVo> {
         } else {
             UserVo vo = new UserVo();
             vo.setEmail(item.getEmail());
-            vo.setPassword(item.getPassword());
             vo.setId(NumberUtil.toString(item.getId()));
-            if (ListUtil.isNotEmpty(item.getAuthorityUsers()) && authorityUsers) {
-                vo.setAuthorityUserVo(authorityUserConverter.toVo(item.getAuthorityUsers()));
+            if (ListUtil.isNotEmpty(item.getAuthorityUsers())) {
+                item.getAuthorityUsers().forEach((AuthorityUser role) -> {
+                    vo.getAuthorityVos().add(authorityConverter.toVo(role.getAuthority()));
+                });
             }
-
             return vo;
         }
     }

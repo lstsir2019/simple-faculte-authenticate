@@ -28,5 +28,4 @@ public class AuthorityUser {
         this.authority = authority;
     }
 
-
 }

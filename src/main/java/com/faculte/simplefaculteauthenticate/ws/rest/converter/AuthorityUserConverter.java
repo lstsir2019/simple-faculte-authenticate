@@ -5,6 +5,7 @@ import com.faculte.simplefaculteauthenticate.domain.bean.AuthorityUser;
 import com.faculte.simplefaculteauthenticate.domain.bean.User;
 import com.faculte.simplefaculteauthenticate.util.NumberUtil;
 import com.faculte.simplefaculteauthenticate.ws.rest.vo.AuthorityUserVo;
+import com.faculte.simplefaculteauthenticate.ws.rest.vo.AuthorityVo;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,11 +73,12 @@ public class AuthorityUserConverter implements AbstractConverter<AuthorityUser, 
     }
 
     public List<AuthorityUser> toItem(User item, List<String> authorities) {
-        List<AuthorityUser> authorityUsers=new ArrayList<>();
+        List<AuthorityUser> authorityUsers = new ArrayList<>();
         for (String role : authorities) {
-            AuthorityUser authorityUser=new AuthorityUser(item, new Authority(role));
+            AuthorityUser authorityUser = new AuthorityUser(item, new Authority(role));
             authorityUsers.add(authorityUser);
         }
         return authorityUsers;
     }
+
 }

@@ -1,4 +1,5 @@
- package com.faculte.simplefaculteauthenticate.domain.security.jwt;
+package com.faculte.simplefaculteauthenticate.domain.security.jwt;
+
 import com.faculte.simplefaculteauthenticate.domain.security.jwt.TokenProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,8 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * Filters incoming requests and installs a Spring Security principal if a header corresponding to a valid user is
- * found.
+ * Filters incoming requests and installs a Spring Security principal if a
+ * header corresponding to a valid user is found.
  */
 public class JWTFilter extends GenericFilterBean {
 
@@ -26,7 +27,7 @@ public class JWTFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String jwt = resolveToken(httpServletRequest);
         if (StringUtils.hasText(jwt) && this.tokenProvider.validateToken(jwt)) {
@@ -36,8 +37,10 @@ public class JWTFilter extends GenericFilterBean {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    private String resolveToken(HttpServletRequest request){
+    private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(JWTConfigurer.AUTHORIZATION_HEADER);
+        System.out.println("bearerToken" + bearerToken);
+        System.out.println(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer "));
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());
         }

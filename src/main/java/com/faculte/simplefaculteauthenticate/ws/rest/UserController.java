@@ -7,13 +7,13 @@ package com.faculte.simplefaculteauthenticate.ws.rest;
 
 import com.faculte.simplefaculteauthenticate.domain.bean.User;
 import com.faculte.simplefaculteauthenticate.domain.model.service.UserService;
+import com.faculte.simplefaculteauthenticate.ws.rest.converter.UserConverter;
+import com.faculte.simplefaculteauthenticate.ws.rest.vo.UserVo;
 import java.security.Principal;
 import java.util.List;
-import javax.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,22 +27,26 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserConverter userConverter;
 
     @GetMapping(value = "/users")
-  //  @RolesAllowed("Role_ADMIN")
-  // @Secured("ROLE_ADMIN")
+    //  @RolesAllowed("Role_ADMIN")
+    // @Secured("ROLE_ADMIN")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserVo>> getAllUsers() {
         List<User> users = userService.findAll();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        userConverter.init();
+        List<UserVo> usersVo = userConverter.toVo(users);
+        return new ResponseEntity<>(usersVo, HttpStatus.OK);
 
     }
 
-    @GetMapping(value = "/getuser")
+    @GetMapping(value = "/user")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<User> getUser(Principal principal) {
-
-        User user = userService.findByEmail(principal.getName());
+    public ResponseEntity<UserVo> getUser(Principal principal) {
+        this.userConverter.init();
+        UserVo user = userConverter.toVo(userService.findByEmail(principal.getName()));
         return new ResponseEntity<>(user, HttpStatus.OK);
 
     }

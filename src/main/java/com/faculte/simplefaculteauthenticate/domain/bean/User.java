@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(exclude = {"email","password"})
+@EqualsAndHashCode(exclude = {"email", "password"})
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -19,20 +19,22 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String email, password;
- /** 
-   * @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.EAGER)
-   * @JoinTable(
-   *         name = "authority_user",
-   *         joinColumns = @JoinColumn(name = "user_id"),
-   *         inverseJoinColumns = @JoinColumn(name = "authority_id"))
-   * private List<Authority> authorities = new ArrayList();
-   * 
-   * */
+    /**
+     * @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch =
+     * FetchType.EAGER)
+     * @JoinTable( name = "authority_user", joinColumns = @JoinColumn(name =
+     * "user_id"), inverseJoinColumns = @JoinColumn(name = "authority_id"))
+     * private List<Authority> authorities = new ArrayList();
+     *
+     *
+     */
 
     @OneToMany(mappedBy = "user")
-    private List<AuthorityUser> authorityUsers= new ArrayList<>();
+    private List<AuthorityUser> authorityUsers = new ArrayList<>();
 
-
-    
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
 }
