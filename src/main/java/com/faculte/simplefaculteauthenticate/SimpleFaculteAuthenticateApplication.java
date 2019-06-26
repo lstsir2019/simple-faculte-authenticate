@@ -35,12 +35,12 @@ public class SimpleFaculteAuthenticateApplication {
         SpringApplication.run(SimpleFaculteAuthenticateApplication.class, args);
     }
 
-    @Bean
-    ApplicationRunner applicationRunner(UserService userService) {
-        return (ApplicationArguments args) -> {
-            userService.save(new User("yassir", "password"));
-        };
-
-    }
+//    @Bean
+//    ApplicationRunner applicationRunner(UserService userService) {
+//        return (ApplicationArguments args) -> {
+//            userService.save(new User("yassir", "password"));
+//        };
+//
+//    }
 
 }
