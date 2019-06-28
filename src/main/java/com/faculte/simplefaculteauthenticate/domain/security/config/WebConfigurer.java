@@ -5,6 +5,9 @@
  */
 package com.faculte.simplefaculteauthenticate.domain.security.config;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
+import java.util.Arrays;
+import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,19 +25,16 @@ public class WebConfigurer {
 
     @Bean
     public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(Boolean.TRUE);
-        config.addAllowedOrigin("http://localhost:4200");
-//        
-//        if (config.getAllowedOrigins() != null && !config.getAllowedOrigins().isEmpty()) {
-//            log.debug("Registering CORS filter");
-//            source.registerCorsConfiguration("/api/**", config);
-//            source.registerCorsConfiguration("/management/**", config);
-//            source.registerCorsConfiguration("/v2/api-docs", config);
-//        }
-//        return new CorsFilter(source);
-//    }
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedHeader("*");
+        config.setExposedHeaders(Arrays.asList("Authorization", "Access-Control-Allow-Origin", "Content-Disposition", "Cache-Control", "no-cache", "no-store", "must-revalidate", "Pragma", "no-cache", "Expires"));
+        config.addAllowedOrigin("*");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("PUT");
+        config.addAllowedMethod("DELETE");
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
