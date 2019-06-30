@@ -5,10 +5,11 @@
  */
 package com.faculte.simplefaculteauthenticate.domain.security;
 
-
 import com.faculte.simplefaculteauthenticate.domain.bean.User;
 import com.faculte.simplefaculteauthenticate.domain.model.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,16 @@ public class UserDetailsService implements org.springframework.security.core.use
             return new UserDetails(user);
         } else {
             throw new UsernameNotFoundException("username:" + username + " not found!!!!");
+        }
+    }
+
+    public String getCurrentUsername() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            org.springframework.security.core.userdetails.UserDetails principal = (org.springframework.security.core.userdetails.UserDetails) authentication.getPrincipal();
+            return principal.getUsername();
+        } catch (Exception e) {
+            return null;
         }
     }
 

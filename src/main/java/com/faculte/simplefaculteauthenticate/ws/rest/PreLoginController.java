@@ -27,12 +27,10 @@ public class PreLoginController {
     private UserService userService;
     @Autowired
     private UserConverter userConverter;
-    
 
     @PostMapping(value = "/registration")
     public ResponseEntity<String> registration(@RequestBody UserVo userVo) {
         userConverter.init();
-        userConverter.setAuthorityUsers(true);
         User dbUser = userService.save(userConverter.toItem(userVo));
         if (dbUser != null) {
             return new ResponseEntity<>(("user created successfully"), HttpStatus.OK);

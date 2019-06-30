@@ -1,5 +1,6 @@
 package com.faculte.simplefaculteauthenticate.domain.model.service.impl;
 
+import com.faculte.simplefaculteauthenticate.domain.bean.Authority;
 import com.faculte.simplefaculteauthenticate.domain.bean.AuthorityUser;
 import com.faculte.simplefaculteauthenticate.domain.model.dao.AuthorityUserDao;
 import com.faculte.simplefaculteauthenticate.domain.model.service.AuthorityService;
@@ -38,6 +39,11 @@ public class AuthorityUserServiceImpl implements AuthorityUserService {
             authorityuserDao.save(authorityuser);
             return authorityuser;
         }
+    }
+
+    @Override
+    public List<Authority> findAuthorityByUserEmail(String email) {
+        return authorityuserDao.findAuthorityByUserEmail(email);
     }
 
     @Override

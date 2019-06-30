@@ -5,8 +5,12 @@
  */
 package com.faculte.simplefaculteauthenticate.ws.rest;
 
+import com.faculte.simplefaculteauthenticate.domain.bean.Authority;
 import com.faculte.simplefaculteauthenticate.domain.bean.User;
+import com.faculte.simplefaculteauthenticate.domain.model.service.AuthorityUserService;
 import com.faculte.simplefaculteauthenticate.domain.model.service.UserService;
+import com.faculte.simplefaculteauthenticate.domain.security.UserDetails;
+import com.faculte.simplefaculteauthenticate.domain.security.UserDetailsService;
 import com.faculte.simplefaculteauthenticate.ws.rest.converter.UserConverter;
 import com.faculte.simplefaculteauthenticate.ws.rest.vo.UserVo;
 import java.security.Principal;
@@ -29,6 +33,10 @@ public class UserController {
     private UserService userService;
     @Autowired
     private UserConverter userConverter;
+    @Autowired
+    private AuthorityUserService authorityUserService;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @GetMapping(value = "/users")
     //  @RolesAllowed("Role_ADMIN")
@@ -49,5 +57,16 @@ public class UserController {
         UserVo user = userConverter.toVo(userService.findByEmail(principal.getName()));
         return new ResponseEntity<>(user, HttpStatus.OK);
 
+    }
+
+    @GetMapping("/account")
+    public UserVo currentUserAuthorities() {
+        this.userConverter.init();
+        return userConverter.toVo(userService.getCurrentUser());
+    }
+
+    @GetMapping("/accountt")
+    public Principal currentUserAuthorities(Principal principal) {
+        return principal;
     }
 }

@@ -5,30 +5,19 @@
  */
 package com.faculte.simplefaculteauthenticate.ws.rest;
 
-import antlr.Token;
 import com.faculte.simplefaculteauthenticate.domain.security.config.CustomAthenticationProvider;
-import com.faculte.simplefaculteauthenticate.domain.bean.User;
-import com.faculte.simplefaculteauthenticate.domain.security.UserDetails;
 import com.faculte.simplefaculteauthenticate.domain.security.jwt.JWTConfigurer;
 import com.faculte.simplefaculteauthenticate.domain.security.jwt.JWTToken;
 import com.faculte.simplefaculteauthenticate.domain.security.jwt.TokenProvider;
 import com.faculte.simplefaculteauthenticate.ws.rest.vo.LoginVo;
-import com.faculte.simplefaculteauthenticate.ws.rest.vo.UserVo;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,7 +39,6 @@ public class AuthenticationController {
 
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(loginVo.getEmail(), loginVo.getPassword());
-
         Authentication authentication = athenticationProvider.authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         boolean rememberMe = (null == loginVo.isRememberMe()) ? false : loginVo.isRememberMe();

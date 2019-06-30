@@ -15,11 +15,10 @@ import org.springframework.stereotype.Component;
 public class AuthorityUserConverter implements AbstractConverter<AuthorityUser, AuthorityUserVo> {
 
     private boolean user;
+    private boolean authority;
 
     @Autowired
     private UserConverter userConverter;
-    private boolean authority;
-
     @Autowired
     private AuthorityConverter authorityConverter;
 
@@ -31,6 +30,7 @@ public class AuthorityUserConverter implements AbstractConverter<AuthorityUser, 
             AuthorityUser item = new AuthorityUser();
 
             if (user && vo.getUserVo() != null) {
+                userConverter.setAuthorities(Boolean.FALSE);
                 item.setUser(userConverter.toItem(vo.getUserVo()));
             }
 
@@ -54,6 +54,7 @@ public class AuthorityUserConverter implements AbstractConverter<AuthorityUser, 
             AuthorityUserVo vo = new AuthorityUserVo();
 
             if (user && item.getUser() != null) {
+                userConverter.setAuthorities(Boolean.FALSE);
                 vo.setUserVo(userConverter.toVo(item.getUser()));
             }
 
@@ -72,10 +73,10 @@ public class AuthorityUserConverter implements AbstractConverter<AuthorityUser, 
         this.authority = true;
     }
 
-    public List<AuthorityUser> toItem(User item, List<String> authorities) {
+    public List<AuthorityUser> toItem(User item, List<AuthorityVo> authorities) {
         List<AuthorityUser> authorityUsers = new ArrayList<>();
-        for (String role : authorities) {
-            AuthorityUser authorityUser = new AuthorityUser(item, new Authority(role));
+        for (AuthorityVo role : authorities) {
+            AuthorityUser authorityUser = new AuthorityUser(item, authorityConverter.toItem(role));
             authorityUsers.add(authorityUser);
         }
         return authorityUsers;

@@ -5,9 +5,7 @@
  */
 package com.faculte.simplefaculteauthenticate.domain.security.config;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import java.util.Arrays;
-import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

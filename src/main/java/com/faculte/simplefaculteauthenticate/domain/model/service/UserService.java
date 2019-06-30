@@ -9,6 +9,8 @@ public interface UserService {
 
     public User saveWithAuthorityUsers(User user);
 
+    public User getCurrentUser();
+
     public void authenticate(String username, String password);
 
     public User findByEmail(String username);
@@ -28,6 +30,5 @@ public interface UserService {
     public List<User> clone(List<User> users);
 
     public List<User> findByCriteria(String email, String password, Long id);
-
 
 }

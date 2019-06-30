@@ -1,20 +1,17 @@
 package com.faculte.simplefaculteauthenticate.ws.rest.converter;
 
-import com.faculte.simplefaculteauthenticate.domain.bean.AuthorityUser;
 import com.faculte.simplefaculteauthenticate.domain.bean.User;
 import com.faculte.simplefaculteauthenticate.util.ListUtil;
 import com.faculte.simplefaculteauthenticate.util.NumberUtil;
 import com.faculte.simplefaculteauthenticate.util.StringUtil;
 import com.faculte.simplefaculteauthenticate.ws.rest.vo.UserVo;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserConverter implements AbstractConverter<User, UserVo> {
 
-    private boolean authorityUsers = true;
     private boolean authorities = true;
 
     @Autowired
@@ -37,10 +34,6 @@ public class UserConverter implements AbstractConverter<User, UserVo> {
                 item.setId(NumberUtil.toLong(vo.getId()));
             }
 
-            if (ListUtil.isNotEmpty(vo.getAuthorities()) && authorityUsers) {
-                this.authorityUsers = false;
-                item.setAuthorityUsers(authorityUserConverter.toItem(item, vo.getAuthorities()));
-            }
             if (ListUtil.isNotEmpty(vo.getAuthorities()) && authorities) {
                 this.authorities = false;
                 item.setAuthorityUsers(authorityUserConverter.toItem(item, vo.getAuthorities()));
@@ -58,26 +51,27 @@ public class UserConverter implements AbstractConverter<User, UserVo> {
             UserVo vo = new UserVo();
             vo.setEmail(item.getEmail());
             vo.setId(NumberUtil.toString(item.getId()));
-            if (ListUtil.isNotEmpty(item.getAuthorityUsers())) {
-                item.getAuthorityUsers().forEach((AuthorityUser role) -> {
-                    vo.getAuthorityVos().add(authorityConverter.toVo(role.getAuthority()));
-                });
+            if (ListUtil.isNotEmpty(item.getAuthorityUsers()) && authorities) {
+                this.authorities = false;
+                vo.setAuthorities(item.getAuthorityUsers()
+                        .stream()
+                        .map(au -> authorityConverter.toVo(au.getAuthority()))
+                        .collect(Collectors.toList()));
             }
             return vo;
         }
     }
 
     public void init() {
-        this.authorityUsers = true;
         this.authorities = true;
     }
 
-    public boolean isAuthorityUsers() {
-        return authorityUsers;
+    public boolean isAuthorities() {
+        return authorities;
     }
 
-    public void setAuthorityUsers(boolean authorityUsers) {
-        this.authorityUsers = authorityUsers;
+    public void setAuthorities(boolean authorities) {
+        this.authorities = authorities;
     }
 
     public AuthorityUserConverter getAuthorityUserConverter() {

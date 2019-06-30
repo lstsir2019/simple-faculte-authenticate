@@ -4,61 +4,76 @@ import com.faculte.simplefaculteauthenticate.domain.bean.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
 
-    private final  User user;
+    private String password;
+    private String username;
 
-    private final Set<GrantedAuthority> authorities;
+    private boolean accountNonExpired;
+    private boolean accountNonLocked;
+    private boolean credentialsNonExpired;
+    private boolean enabled;
+    private Set<GrantedAuthority> authorities;
+
+    public UserDetails(com.faculte.simplefaculteauthenticate.domain.security.UserDetails userDetails) {
+        this.username = userDetails.getUsername();
+        this.password = userDetails.getPassword();
+        this.accountNonExpired = userDetails.isAccountNonExpired();
+        this.accountNonLocked = userDetails.isAccountNonLocked();
+        this.credentialsNonExpired = userDetails.isCredentialsNonExpired();
+        this.enabled = userDetails.isEnabled();
+        this.authorities = userDetails.getAuthorities();
+    }
 
     public UserDetails(User user) {
-        this.user = user;
-        this.authorities = this.user.getAuthorityUsers()
+        this.username = user.getEmail();
+        this.password = user.getPassword();
+        this.accountNonExpired = true;
+        this.accountNonLocked = true;
+        this.credentialsNonExpired = true;
+        this.enabled = true;
+        this.authorities = user.getAuthorityUsers()
                 .stream()
                 .map(au -> new SimpleGrantedAuthority("ROLE_" + au.getAuthority().getAuthority().toUpperCase()))
                 .collect(Collectors.toSet());
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
+    public String getPassword() {
+        return password;
     }
 
     @Override
-    public String getPassword() {
-        return this.user.getPassword();
+    public Set<GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override
     public String getUsername() {
-        return this.user.getEmail();
+        return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return credentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 
-    @Override
-    public String toString() {
-        return "UserDetails{" + "user=" + user + ", authorities=" + authorities + '}';
-    }
 }

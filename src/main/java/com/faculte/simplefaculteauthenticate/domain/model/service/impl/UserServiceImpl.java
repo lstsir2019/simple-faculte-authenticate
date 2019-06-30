@@ -94,6 +94,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Override
+    public User getCurrentUser() {
+        return findByEmail(userDetailsService.getCurrentUsername());
+    }
+
     @Override
     public User findByEmail(String username) {
         return userDao.findByEmail(username);
